@@ -5,6 +5,7 @@
 /app/package-lock.json
 /server/package-lock.json
 /app/dist
+/server/config.json
 
 # local env files
 .env.local
