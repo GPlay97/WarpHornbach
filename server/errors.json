@@ -1,3 +1,14 @@
 {
-    
+    "UNPROCESSABLE_ENTITY": {
+        "code": 422,
+        "message": "Unprocessable entity"
+    },
+    "INTERNAL_ERROR": {
+        "code": 500,
+        "message": "Internal error occurred"
+    },
+    "UNKNOWN_ROUTE": {
+        "code": 7,
+        "message": "Unknown operation. Your request could not be processed"
+    }
 }
