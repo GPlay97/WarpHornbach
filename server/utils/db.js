@@ -15,15 +15,15 @@ module.exports = {
      * @example db.query('SELECT id FROM foo WHERE bar=?', ['foobar'], (err, queryRes) => console.log(err, queryRes));
      * @param {String} sql the sql string
      * @param {Array} params Array of values to bind to parameters ('?' within sql string)
-     * @param {Function} callback callback function
      */
-    query: (sql, params, callback) => {
-        if (typeof params === 'function') callback = params;
-        if (!Array.isArray(params)) params = [];
-        if (typeof sql === 'string') {
+    query: async (sql, params) => {
+        return new Promise((resolve, reject) => {
+            if (!Array.isArray(params)) params = [];
+            if (typeof sql !== 'string') return reject(errors.UNPROCESSABLE_ENTITY);
             db.query(mysql.format(sql, params), (err, queryRes) => {
-                if (typeof callback === 'function') callback(err, queryRes);
+                if (err) return reject(errors.DB_QUERY);
+                resolve(queryRes);
             });
-        } else if (typeof callback === 'function') callback(errors.UNPROCESSABLE_ENTITY);
+        });
     }
 };
