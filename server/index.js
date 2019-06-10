@@ -1,7 +1,9 @@
 const express = require('express');
-const errors = require('errors.json');
-const config = require('config.json');
+const errors = require('./errors.json');
+const config = require('./config.json');
 const logger = require('./utils/logger');
+
+const usersRouter = require('./routes/users');
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.use(express.urlencoded({
 }));
 
 // route handling
+app.use('/users', usersRouter);
 
 // unknown route
 app.use((_, res) => res.status(404).json(errors.UNKNOWN_ROUTE));
@@ -29,5 +32,7 @@ app.use((err, req, res, next ) => {
         err: config.ENVIRONMENT === 'development' ? err : status === 500 ? errors.INTERNAL_ERROR.message : errors.UNPROCESSABLE_ENTITY.message
     });
 });
+
+app.listen(config.PORT, () => console.log('[HTTP] Server started on port ', config.PORT));
 
 module.exports = app;
