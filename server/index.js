@@ -1,4 +1,5 @@
 const express = require('express');
+const session = require('express-session');
 const errors = require('./errors.json');
 const config = require('./config.json');
 const logger = require('./utils/logger');
@@ -6,6 +7,18 @@ const logger = require('./utils/logger');
 const usersRouter = require('./routes/users');
 
 const app = express();
+
+// ensure that session secret is set
+if (!config.SESSION_SECRET) throw new Error('Session secret is not set');
+// session handling
+app.use(session({
+    secret: config.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false
+    }
+}));
 
 // route parsing
 app.use(express.json());
