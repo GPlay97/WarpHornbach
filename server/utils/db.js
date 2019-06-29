@@ -18,7 +18,7 @@ module.exports = {
      */
     query: async (sql, params) => {
         return new Promise((resolve, reject) => {
-            if (!Array.isArray(params)) params = [];
+            if (!Array.isArray(params) && (typeof params !== 'object' || params == null)) params = [];
             if (typeof sql !== 'string') return reject(errors.UNPROCESSABLE_ENTITY);
             db.query(mysql.format(sql, params), (err, queryRes) => {
                 if (err) return reject(errors.DB_QUERY);
