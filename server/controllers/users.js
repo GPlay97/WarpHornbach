@@ -10,7 +10,7 @@ const register = async (req, res, next) => {
         username: req.params.username,
         pwd_hash: bcrypt.hashSync(req.body.password, 10)
     }).then(() => {
-        req.session.authenticated = true;
+        req.session.username = req.params.username;
         res.json({
             id: req.session.id
         });
@@ -23,7 +23,7 @@ const login = async (req, res, next) => {
 
     if (!user) return next(errors.USER_NOT_FOUND);
     if (!bcrypt.compareSync(req.body.password, user.pwd_hash)) return next(errors.INVALID_CREDENTIALS);
-    req.session.authenticated = true;
+    req.session.username = req.params.username;
     res.json({
         id: req.session.id
     });
