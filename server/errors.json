@@ -1,4 +1,8 @@
 {
+    "UNAUTHORIZED": {
+        "code": 401,
+        "message": "Unauthorized. Please login"
+    },
     "UNPROCESSABLE_ENTITY": {
         "code": 422,
         "message": "Unprocessable entity"
@@ -14,5 +18,21 @@
     "UNKNOWN_ROUTE": {
         "code": 7,
         "message": "Unknown operation. Your request could not be processed"
+    },
+    "USER_NOT_FOUND": {
+        "code": 8,
+        "message": "User not found"
+    },
+    "USER_ALREADY_REGISTERED": {
+        "code": 9,
+        "message": "User already registered"
+    },
+    "PASSWORD_TOO_SHORT": {
+        "code": 10,
+        "message": "Password too short. Must be a string with at least 6 characters"
+    },
+    "INVALID_CREDENTIALS": {
+        "code": 401,
+        "message": "Invalid credentials"
     }
 }
