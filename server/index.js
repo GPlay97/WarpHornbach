@@ -5,6 +5,9 @@ const config = require('./config.json');
 const logger = require('./utils/logger');
 
 const usersRouter = require('./routes/users');
+const activityRouter = require('./routes/activities');
+
+const authMiddleware = require('./middlewares/auth');
 
 const app = express();
 
@@ -28,6 +31,7 @@ app.use(express.urlencoded({
 
 // route handling
 app.use('/users', usersRouter);
+app.use('/activities', authMiddleware.isAuthenticated, activityRouter);
 
 // unknown route
 app.use((_, res) => res.status(404).json(errors.UNKNOWN_ROUTE));
