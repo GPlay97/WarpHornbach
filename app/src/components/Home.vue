@@ -16,7 +16,7 @@
       </v-dialog>
       <v-card class="mx-auto">
         <v-card-text class="headline font-weight-bold">
-          <span class="total-ads">2 / 25 Werbungen von Dir</span>
+          <span class="total-ads">{{ stats.personal }} / {{ stats.total }} Werbungen von Dir</span>
         </v-card-text>
         <v-card-actions>
           <v-list-tile class="grow">
@@ -24,7 +24,7 @@
               <v-img :src="avatarURL"></v-img>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>LegendSkyFall</v-list-tile-title>
+              <v-list-tile-title>{{ username }}</v-list-tile-title>
             </v-list-tile-content>
             <v-layout align-center justify-end>
               <v-btn color="primary" @click="showDialog = true">Eintragen</v-btn>
@@ -52,13 +52,18 @@
 
 <script>
   import axios from 'axios';
+  import storage from '../utils/storage';
 
   axios.defaults.withCredentials = true;
 
   export default {
     data: () => ({
       loaded: false,
-      avatarURL: 'http://cravatar.eu/avatar/LegendSkyFall',
+      stats: {
+        personal: 0,
+        total: 0
+      },
+      username: storage.getValue('username'),
       activities: [{
         id: 2,
         username: 'Niki0311',
@@ -70,23 +75,32 @@
       }],
       showDialog: false
     }),
+    computed: {
+      avatarURL() {
+        return `http://cravatar.eu/avatar/${this.username}`;
+      }
+    },
     methods: {
       displayTime(timestmap) {
         return this.$root.MomentJS(new Date(timestmap * 1000)).locale('de').fromNow();
       },
       displayAvatar(username) {
         return `https://cravatar.eu/avatar/${username}`;
-      }
-    },
-    mounted() {
-      axios.get('http://127.0.0.1:3003/stats')
+      },
+      displayData() {
+        axios.get('http://127.0.0.1:3003/stats')
         .then((response) => {
-          console.log({response});
+          this.stats = response.data;
+          this.loaded = true;
         })
         .catch((err) => {
           console.error(err);
           this.$router.push('/login');
         })
+      }
+    },
+    mounted() {
+      this.displayData();
     }
   }
 </script>

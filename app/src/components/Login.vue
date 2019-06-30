@@ -18,7 +18,7 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" @click="login()">Anmelden</v-btn>
+                                <v-btn color="primary" @click="login()" type="submit">Anmelden</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-form>
@@ -30,6 +30,7 @@
 
 <script>
     import axios from 'axios';
+    import storage from '../utils/storage';
 
     axios.defaults.withCredentials = true;
 
@@ -41,6 +42,9 @@
             passwordError: '',
             unknownError: ''
         }),
+        mounted() {
+            storage.removeValue('username');
+        },
         methods: {
             clearErrors() {
                 this.usernameError = this.passwordError = this.unknownError = '';
@@ -50,6 +54,7 @@
                 axios.post(`http://127.0.0.1:3003/users/${this.username}/login`, {
                     password: this.password
                 }).then(() => {
+                    storage.setValue('username', this.username);
                     this.$router.push('/');
                 })
                 .catch((err) => {
