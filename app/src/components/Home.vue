@@ -42,7 +42,7 @@
             <v-list-tile-title>{{ activity.username }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-list-tile-action-text>{{ displayTime(activity.timestamp) }}</v-list-tile-action-text>
+            <v-list-tile-action-text>{{ displayTime(activity.activity_time) }}</v-list-tile-action-text>
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
@@ -64,15 +64,7 @@
         total: 0
       },
       username: storage.getValue('username'),
-      activities: [{
-        id: 2,
-        username: 'Niki0311',
-        timestamp: 1559501168
-      }, {
-        id: 1,
-        username: 'LegendSkyFall',
-        timestamp: 1559500378
-      }],
+      activities: [],
       showDialog: false
     }),
     computed: {
@@ -91,7 +83,15 @@
         axios.get('http://127.0.0.1:3003/stats')
         .then((response) => {
           this.stats = response.data;
-          this.loaded = true;
+          axios.get('http://127.0.0.1:3003/activities')
+            .then((response) => {
+              this.activities = response.data;
+              this.loaded = true;
+            })
+            .catch((err) => {
+              console.error(err);
+              this.$router.push('/login');
+            });
         })
         .catch((err) => {
           console.error(err);
