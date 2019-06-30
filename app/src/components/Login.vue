@@ -10,15 +10,15 @@
                             </v-toolbar>
                             <v-card-text>
                                 <v-text-field prepend-icon="person" name="username" label="Benutzername" type="text"
-                                    v-model="username" :error-messages="usernameError" required>
+                                    v-model="username" :error-messages="usernameError" required @input="clearErrors()">
                                 </v-text-field>
                                 <v-text-field prepend-icon="lock" name="password" label="Passwort" type="password"
-                                    v-model="password" :error-messages="unknownError || passwordError" required>
+                                    v-model="password" :error-messages="unknownError || passwordError" required @input="clearErrors()">
                                 </v-text-field>
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary">Anmelden</v-btn>
+                                <v-btn color="primary" @click="login()">Anmelden</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-form>
@@ -29,6 +29,10 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
+    axios.defaults.withCredentials = true;
+
     export default {
         data: () => ({
             username: '',
@@ -36,6 +40,23 @@
             usernameError: '',
             passwordError: '',
             unknownError: ''
-        })
+        }),
+        methods: {
+            clearErrors() {
+                this.usernameError = this.passwordError = this.unknownError = '';
+            },
+            login() {
+                this.clearErrors();
+                axios.post(`http://127.0.0.1:3003/users/${this.username}/login`, {
+                    password: this.password
+                }).then(() => {
+                    this.$router.push('/');
+                })
+                .catch((err) => {
+                    console.error(err);
+                    this.unknownError = 'Anmeldung fehlgeschlagen';
+                })
+            }
+        }
     }
 </script>

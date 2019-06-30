@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <v-layout v-if="loaded">
     <v-flex xs12 sm6 offset-sm3>
       <v-dialog v-model="showDialog" persistent max-width="290">
         <v-card>
@@ -51,8 +51,13 @@
 </template>
 
 <script>
+  import axios from 'axios';
+
+  axios.defaults.withCredentials = true;
+
   export default {
     data: () => ({
+      loaded: false,
       avatarURL: 'http://cravatar.eu/avatar/LegendSkyFall',
       activities: [{
         id: 2,
@@ -72,6 +77,16 @@
       displayAvatar(username) {
         return `https://cravatar.eu/avatar/${username}`;
       }
+    },
+    mounted() {
+      axios.get('http://127.0.0.1:3003/stats')
+        .then((response) => {
+          console.log({response});
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$router.push('/login');
+        })
     }
   }
 </script>
