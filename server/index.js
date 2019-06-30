@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const errors = require('./errors.json');
 const config = require('./config.json');
 const logger = require('./utils/logger');
@@ -21,6 +22,20 @@ app.use(session({
     saveUninitialized: true,
     cookie: {
         secure: false
+    }
+}));
+
+// Cross-Origin-Resource-Sharing support
+app.use(cors({
+    credentials: true,
+    /**
+     * Handles the origin for CORS request
+     * @param {String} origin the origin
+     * @param {Function} callback callback function
+     */
+    origin: (origin, callback) => {
+        if (!origin || origin === 'null') origin = '*';
+        callback(null, origin);
     }
 }));
 
