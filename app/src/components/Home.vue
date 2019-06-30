@@ -10,7 +10,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" flat @click="showDialog = false">Nein</v-btn>
-            <v-btn color="green darken-1" flat @click="showDialog = false">Ja</v-btn>
+            <v-btn color="green darken-1" flat @click="showDialog = false; postActivity()">Ja</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -78,6 +78,14 @@
       },
       displayAvatar(username) {
         return `https://cravatar.eu/avatar/${username}`;
+      },
+      postActivity() {
+        axios.post('http://127.0.0.1:3003/activities')
+          .then(() => this.displayData())
+          .catch((err) => {
+            console.error(err);
+            this.$router.push('/login');
+          })
       },
       displayData() {
         axios.get('http://127.0.0.1:3003/stats')
