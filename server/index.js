@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const https = require('https');
 const session = require('express-session');
 const cors = require('cors');
 const errors = require('./errors.json');
@@ -12,6 +14,12 @@ const statsRouter = require('./routes/stats');
 const authMiddleware = require('./middlewares/auth');
 
 const app = express();
+
+const httpsServer = config.SSL ? https.createServer({
+    ca: fs.readFileSync(config.CHAIN_PATH, 'utf-8'),
+    key: fs.readFileSync(config.PRIVATE_KEY_PATH, 'utf-8'),
+    cert: fs.readFileSync(config.CERTIFICATE_PATH, 'utf-8')
+}, app) : false;
 
 // ensure that session secret is set
 if (!config.SESSION_SECRET) throw new Error('Session secret is not set');
@@ -67,6 +75,7 @@ app.use((err, req, res, next ) => {
     });
 });
 
-app.listen(config.PORT, () => console.log('[HTTP] Server started on port ', config.PORT));
+if (!httpsServer) app.listen(config.PORT, () => console.log('[HTTP] Server started on port ', config.PORT));
+else httpsServer.listen(config.PORT, () => console.log('[HTTPS] Server started on port ', config.PORT));
 
 module.exports = app;
