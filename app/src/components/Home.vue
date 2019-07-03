@@ -69,7 +69,7 @@
     }),
     computed: {
       avatarURL() {
-        return `http://cravatar.eu/avatar/${this.username}`;
+        return `https://cravatar.eu/avatar/${this.username}`;
       }
     },
     methods: {
