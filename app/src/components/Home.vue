@@ -107,6 +107,7 @@
         });
         const fromUser = totalThisWeek.filter((activity) => activity.username === username);
 
+        if (fromUser.length === totalThisWeek.length) return `Woche: ${fromUser.length}`;
         return `Woche: ${fromUser.length} / ${totalThisWeek.length}`;
       },
       displayData() {
