@@ -27,8 +27,15 @@ const getActivities = async (req, res, next) => {
         .catch((err) => next(err));
 };
 
+const getLastActivity = async (req, res, next) => {
+    db.query('SELECT activity_time, username FROM activity ORDER BY activity_time DESC LIMIT 1')
+        .then((results) => res.json(results[0]))
+        .catch((err) => next(err));
+};
+
 module.exports = {
     postActivity,
-    getActivities
+    getActivities,
+    getLastActivity
 };
 

@@ -17,19 +17,22 @@
       <v-card class="mx-auto">
         <v-card-text class="headline font-weight-bold">
           <span class="total-ads">{{ stats.personal }} / {{ stats.total }} Werbungen von Dir</span>
+          <p class="caption text-xs-center last-ad">{{ lastAd }}</p>
         </v-card-text>
         <v-card-actions>
-          <v-list-tile class="grow">
-            <v-list-tile-avatar color="grey darken-3">
-              <v-img :src="avatarURL"></v-img>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ username }}</v-list-tile-title>
-            </v-list-tile-content>
-            <v-layout align-center justify-end>
-              <v-btn color="primary" @click="showDialog = true">Eintragen</v-btn>
-            </v-layout>
-          </v-list-tile>
+          <v-list class="action-list">
+            <v-list-tile class="grow">
+              <v-list-tile-avatar color="grey darken-3">
+                <v-img :src="avatarURL"></v-img>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ username }}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-layout align-center justify-end>
+                <v-btn color="primary" @click="showDialog = true">Eintragen</v-btn>
+              </v-layout>
+            </v-list-tile>
+          </v-list>
         </v-card-actions>
       </v-card>
       <v-list class="activity-list">
@@ -64,6 +67,10 @@
         personal: 0,
         total: 0
       },
+      lastActivity: {
+        username: '',
+        activity_time: 0
+      },
       username: storage.getValue('username'),
       activities: [],
       showDialog: false
@@ -71,6 +78,9 @@
     computed: {
       avatarURL() {
         return `https://cravatar.eu/avatar/${this.username}`;
+      },
+      lastAd() {
+        return `Letzte Werbung ${this.$root.MomentJS(new Date(this.lastActivity.activity_time * 1000)).locale('de').fromNow()} von ${this.lastActivity.username}`;
       }
     },
     methods: {
@@ -103,15 +113,15 @@
         axios.get('http://127.0.0.1:3003/stats')
         .then((response) => {
           this.stats = response.data;
-          axios.get('http://127.0.0.1:3003/activities')
+          return axios.get('http://127.0.0.1:3003/activities')
             .then((response) => {
               this.activities = response.data;
-              this.loaded = true;
+              return axios.get('http://127.0.0.1:3003/activities/last')
+                .then((response) => {
+                  this.lastActivity = response.data;
+                  this.loaded = true;
+                })
             })
-            .catch((err) => {
-              console.error(err);
-              this.$router.push('/login');
-            });
         })
         .catch((err) => {
           console.error(err);
@@ -134,5 +144,11 @@
   }
   .activity-list {
     padding: 8px;
+  }
+  .action-list {
+    width: 100%;
+  }
+  .last-ad {
+    margin-bottom: -16px;
   }
 </style>
