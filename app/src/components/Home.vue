@@ -40,6 +40,7 @@
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title>{{ activity.username }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ revenue(activity.username) }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-list-tile-action-text>{{ displayTime(activity.activity_time) }}</v-list-tile-action-text>
@@ -86,6 +87,17 @@
             console.error(err);
             this.$router.push('/login');
           })
+      },
+      revenue(username) {
+        const self = this;
+        const totalThisWeek = self.activities.filter((activity) => {
+          const timestamp = new Date(activity.activity_time * 1000);
+
+          return self.$root.MomentJS(timestamp).isAfter(self.$root.MomentJS().subtract(7, 'd'));
+        });
+        const fromUser = totalThisWeek.filter((activity) => activity.username === username);
+
+        return `Woche: ${fromUser.length} / ${totalThisWeek.length}`;
       },
       displayData() {
         axios.get('http://127.0.0.1:3003/stats')
