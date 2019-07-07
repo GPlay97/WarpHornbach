@@ -12,7 +12,8 @@ const register = async (req, res, next) => {
     }).then(() => {
         req.session.username = req.params.username;
         res.json({
-            id: req.session.id
+            id: req.session.id,
+            administrator: false
         });
     }).catch((err) => next(err));
 };
@@ -25,7 +26,8 @@ const login = async (req, res, next) => {
     if (!bcrypt.compareSync(req.body.password, user.pwd_hash)) return next(errors.INVALID_CREDENTIALS);
     req.session.username = req.params.username;
     res.json({
-        id: req.session.id
+        id: req.session.id,
+        administrator: !!user.administrator
     });
 };
 
