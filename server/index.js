@@ -10,6 +10,7 @@ const logger = require('./utils/logger');
 const usersRouter = require('./routes/users');
 const activityRouter = require('./routes/activities');
 const statsRouter = require('./routes/stats');
+const revenueRouter = require('./routes/revenue');
 
 const authMiddleware = require('./middlewares/auth');
 
@@ -57,6 +58,7 @@ app.use(express.urlencoded({
 app.use('/users', usersRouter);
 app.use('/activities', authMiddleware.isAuthenticated, activityRouter);
 app.use('/stats', authMiddleware.isAuthenticated, statsRouter);
+app.use('/revenue', authMiddleware.isAuthenticated, revenueRouter);
 
 // unknown route
 app.use((_, res) => res.status(404).json(errors.UNKNOWN_ROUTE));

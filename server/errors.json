@@ -3,6 +3,10 @@
         "code": 401,
         "message": "Unauthorized. Please login"
     },
+    "FORBIDDEN": {
+        "code": 403,
+        "message": "You are not allowed to execute this action"
+    },
     "UNPROCESSABLE_ENTITY": {
         "code": 422,
         "message": "Unprocessable entity"
