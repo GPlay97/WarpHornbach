@@ -9,7 +9,8 @@ Vue.config.productionTip = false;
 
 new Vue({
   data: () => ({
-    MomentJS
+    MomentJS,
+    settingsBtnClicked: false
   }),
   router,
   render: h => h(App)

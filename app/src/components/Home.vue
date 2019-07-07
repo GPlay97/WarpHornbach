@@ -14,6 +14,31 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="$root.settingsBtnClicked" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Gehaltseinstellung</v-card-title>
+          <v-card-text>
+            <v-container grid-list-md>
+              <v-layout wrap>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field label="Fix-Gehalt" required type="number" v-model="revenueObj.salary"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field label="Faktor" required type="number" v-model="revenueObj.factor"></v-text-field>
+                </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field label="Gewinn" required type="number" v-model="revenueObj.profit"></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="$root.settingsBtnClicked = false">Abbruch</v-btn>
+            <v-btn color="green darken-1" flat @click="$root.settingsBtnClicked = false; updateRevenue()">Speichern</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-card class="mx-auto">
         <v-card-text class="headline font-weight-bold">
           <span class="total-ads">{{ stats.personal }} / {{ stats.total }} Werbungen von Dir</span>
@@ -113,8 +138,16 @@
         const fromUser = totalThisWeek.filter((activity) => activity.username === username);
         const salary = parseInt(this.revenueObj.salary + fromUser.length / totalThisWeek.length * this.revenueObj.factor * this.revenueObj.profit) || 0;
 
-        if (fromUser.length === totalThisWeek.length) return `Woche: ${fromUser.length}`;
+        if (!storage.getValue('administrator')) return `Woche: ${fromUser.length}`;
         return `Woche: ${fromUser.length} / ${totalThisWeek.length} [${salary}KAD]`;
+      },
+      updateRevenue() {
+        axios.post('http://127.0.0.1:3003/revenue', this.revenueObj)
+          .then(() => this.displayData())
+          .catch((err) =>{
+            console.error(err);
+            this.$router.push('/login');
+          })
       },
       displayData() {
         axios.get('http://127.0.0.1:3003/stats')

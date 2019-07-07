@@ -44,6 +44,7 @@
         }),
         mounted() {
             storage.removeValue('username');
+            storage.removeValue('administrator');
         },
         methods: {
             clearErrors() {
@@ -53,8 +54,9 @@
                 this.clearErrors();
                 axios.post(`http://127.0.0.1:3003/users/${this.username}/login`, {
                     password: this.password
-                }).then(() => {
+                }).then((response) => {
                     storage.setValue('username', this.username);
+                    storage.setValue('administrator', response.data.administrator);
                     this.$router.push('/');
                 })
                 .catch((err) => {
