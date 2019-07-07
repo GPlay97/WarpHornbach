@@ -17,7 +17,7 @@ const updateRevenue = async (req, res, next) => {
         factor: parseFloat(req.body.factor),
         profit: parseInt(req.body.profit)
     };
-    if (!Object.values(revenueObj).every((value) => value && value > 0)) return next(errors.UNPROCESSABLE_ENTITY);
+    if (revenueObj.salary <= 0 || revenueObj.factor < 0 || revenueObj.profit < 0) return next(errors.UNPROCESSABLE_ENTITY);
     try {
         res.json(await db.query('UPDATE revenue SET ?', revenueObj));
     } catch (err) {
