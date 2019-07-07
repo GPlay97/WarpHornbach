@@ -71,6 +71,11 @@
         username: '',
         activity_time: 0
       },
+      revenueObj: {
+        salary: 0,
+        factor: 0,
+        profit: 0
+      },
       username: storage.getValue('username'),
       activities: [],
       showDialog: false
@@ -106,9 +111,10 @@
           return self.$root.MomentJS(timestamp).isAfter(self.$root.MomentJS().subtract(7, 'd'));
         });
         const fromUser = totalThisWeek.filter((activity) => activity.username === username);
+        const salary = parseInt(this.revenueObj.salary + fromUser.length / totalThisWeek.length * this.revenueObj.factor * this.revenueObj.profit) || 0;
 
         if (fromUser.length === totalThisWeek.length) return `Woche: ${fromUser.length}`;
-        return `Woche: ${fromUser.length} / ${totalThisWeek.length}`;
+        return `Woche: ${fromUser.length} / ${totalThisWeek.length} [${salary}KAD]`;
       },
       displayData() {
         axios.get('http://127.0.0.1:3003/stats')
@@ -120,7 +126,11 @@
               return axios.get('http://127.0.0.1:3003/activities/last')
                 .then((response) => {
                   this.lastActivity = response.data;
-                  this.loaded = true;
+                  return axios.get('http://127.0.0.1:3003/revenue')
+                    .then((response) => {
+                      this.revenueObj = response.data;
+                      this.loaded = true;
+                    })
                 })
             })
         })
@@ -148,6 +158,9 @@
   }
   .action-list {
     width: 100%;
+  }
+  .activity-list .v-list__tile__action-text {
+    text-align: right;
   }
   .last-ad {
     margin-bottom: -16px;
