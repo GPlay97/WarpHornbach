@@ -18,11 +18,9 @@ const getActivities = async (req, res, next) => {
     const params = [];
 
     if (!user.administrator) {
-        activityFilter += 'WHERE username = ? AND activity_time >= ?';
+        activityFilter += 'WHERE username = ?';
         params.push(req.session.username);
-    } else activityFilter += 'WHERE activity_time >= ?';
-
-    params.push(parseInt(new Date() / 1000 - 86400 * 7)); // 7 days ago
+    }
 
     db.query(`SELECT * FROM activity ${activityFilter} ORDER BY activity_time DESC`, params)
         .then((results) => res.json(results))
