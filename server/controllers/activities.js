@@ -14,15 +14,17 @@ const postActivity = async (req, res, next) => {
 
 const getActivities = async (req, res, next) => {
     const user = await usersUtils.getUser(req.session.username);
-    let userFilter = '';
-    let userValues = [];
+    let activityFilter = '';
+    const params = [];
 
     if (!user.administrator) {
-        userFilter += 'WHERE username = ?';
-        userValues.push(req.session.username);
-    }
+        activityFilter += 'WHERE username = ? AND activity_time >= ?';
+        params.push(req.session.username);
+    } else activityFilter += 'WHERE activity_time >= ?';
 
-    db.query(`SELECT * FROM activity ${userFilter} ORDER BY activity_time DESC`, userValues)
+    params.push(parseInt(new Date() / 1000 - 86400 * 7)); // 7 days ago
+
+    db.query(`SELECT * FROM activity ${activityFilter} ORDER BY activity_time DESC`, params)
         .then((results) => res.json(results))
         .catch((err) => next(err));
 };
