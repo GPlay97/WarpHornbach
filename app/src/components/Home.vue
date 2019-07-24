@@ -82,11 +82,13 @@
 <script>
   import axios from 'axios';
   import storage from '../utils/storage';
+  import { clearInterval, setInterval } from 'timers';
 
   axios.defaults.withCredentials = true;
 
   export default {
     data: () => ({
+      refreshInterval: 0,
       loaded: false,
       stats: {
         personal: 0,
@@ -174,7 +176,11 @@
       }
     },
     mounted() {
+      this.refreshInterval = setInterval(this.displayData, 30000);
       this.displayData();
+    },
+    beforeDestroy() {
+      clearInterval(this.refreshInterval);
     }
   }
 </script>
