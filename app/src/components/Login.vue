@@ -1,5 +1,5 @@
 <template>
-    <v-content class="login-form-content">
+    <v-content class="login-form-content" v-if="!loggedIn">
         <v-container fluid fill-height>
             <v-layout align-center justify-center>
                 <v-flex xs12 sm8 md4>
@@ -36,6 +36,7 @@
 
     export default {
         data: () => ({
+            loggedIn: true,
             username: '',
             password: '',
             usernameError: '',
@@ -43,8 +44,14 @@
             unknownError: ''
         }),
         mounted() {
-            storage.removeValue('username');
-            storage.removeValue('administrator');
+            // check if logged in
+            axios.get('http://127.0.0.1:3003/stats')
+                .then(() => this.$router.push('/'))
+                .catch(() => {
+                    this.loggedIn = false;
+                    storage.removeValue('username');
+                    storage.removeValue('administrator');
+                })
         },
         methods: {
             clearErrors() {
